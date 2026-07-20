@@ -1,22 +1,29 @@
-# ledgers/ — 账本模板（按「裁决方式」分账）
+# ledgers/ — ledger templates (split by adjudication mode)
 
-账本 = 歧义不停工的落点。**分账原则: 按谁来裁决、何时裁决分, 不按主题分**——
-这样每本账的执行规则单一, 会话拿到条目即知道能不能直接动手。
+Ledgers are where "ambiguity never stops work" lands. **The split principle: divide by
+who adjudicates and when — never by topic.** That way each ledger carries exactly one
+execution rule, and a session holding an entry knows immediately whether it may act.
 
-| 账本 | 裁决方式 | 收什么 |
+| Ledger | Adjudication | Collects |
 |---|---|---|
-| `AMBIGUITY-LEDGER` | fix-forward 默认 + **批量**供用户裁决 | 行为歧义: 旧行为是 bug 还是契约、修正还是保真 |
-| `QUICKFIX-LEDGER` | 用户提出**即视为 APPROVED**, 登记后直接修 | 用户点名的小修（语义/文案/默认值级） |
-| `POLISH-LEDGER` | **逐条**讨论拍板后才执行 | 纯美化/一致性（不改行为语义） |
+| `AMBIGUITY-LEDGER` | fix-forward by default + **batched** human sign-off | behavioral ambiguity: is the legacy behavior a bug or a contract — correct it or preserve it |
+| `QUICKFIX-LEDGER` | the user naming it **is the approval**; log, then fix directly | small fixes the user points out (semantics / copy / default-value scale) |
+| `POLISH-LEDGER` | **item-by-item** discussion; approved before execution | pure polish/consistency (no behavioral change) |
 
-可选第四账（双线并行/迁移期）: `PORT-LEDGER` 搬运账——旧线每笔**行为性**改动登记一行,
-新线认领对应域时消行; 收口门槛 = 全表清零。纯样式/注释/构建脚本改动不登记。
+Optional fourth (dual-track / migration periods): `PORT-LEDGER`, the porting ledger —
+every **behavioral** change on the legacy track logs one row; the new track clears rows
+as it claims each domain; closing requires a zeroed table. Pure styling / comments /
+build-script changes don't log.
 
-通用规则:
+Common rules:
 
-- 每条一行; 状态机 `LOGGED → DOING → DONE(证据: commit + 质量门) | DEFERRED(记原因)`。
-- 硬约束写在**账头**（契约冻结/质量门/目录边界）, 每条执行不可破——执行会话只读账头
-  即得全部约束, 不必回读法典。
-- 账本自身带 `status:` 头（ACTIVE）, 与 brief 一起被状态头校验脚本覆盖。
-- 批量签收后在账内留「批量签收记录」段（日期 + 覆盖范围 + 排除项）, 不逐行改字,
-  避免与并发写同表冲突。
+- One row per entry; state machine `LOGGED → DOING → DONE (evidence: commit + quality
+  gate) | DEFERRED (reason)`.
+- Hard constraints live in the **ledger header** (contract freeze / quality gate /
+  directory boundaries), unbreakable per entry — an executing session reads the header
+  and has every constraint, no doctrine re-read needed.
+- Ledgers carry their own `status:` header (ACTIVE) and are covered by the status-header
+  validator together with the briefs.
+- After a batch sign-off, append a "batch sign-off record" (date + scope + exclusions)
+  instead of editing rows — avoids write conflicts with concurrent sessions on the same
+  table.

@@ -1,131 +1,169 @@
-# 立项问诊单 — 生命周期决策前置（inception survey）
+# Inception survey — lifecycle decisions up front
 
-status: TEMPLATE（立项对话时读一次, 之后永不注入——产出写进章程与 brief, 本单不再回读）
+status: TEMPLATE (read once in the founding conversation, never injected again — outputs go into the charter and briefs; this file is not re-read)
 
-**为什么有这份**: 功能需求会自己找上门, 生命周期需求不会——它们只在事故里现身, 而那
-一定是最贵的时刻。本单把「突然想到才决定」变成「开局问过、三态登记」。逐条走约半小时,
-由 **AI 在立项对话中主动发起**（用户不必记得这份单存在; 本行为规约的真相源是包 README,
-不依赖任何单一助手的私有记忆）。
+**Why this exists**: feature requirements come find you; lifecycle requirements don't —
+they only surface in incidents, which is always the most expensive moment to meet them.
+This survey turns "decided whenever someone happens to think of it" into "asked at the
+start, dispositioned in writing." Walking it takes about half an hour, **driven
+proactively by the AI in the founding conversation** (the human doesn't need to remember
+this survey exists; the source of truth for that behavior is the pack README, not any
+single assistant's private memory).
 
-**配对件设计**: 本文件为通用版, 不含具体工程细节——各维的实付教训已升华进问句本身。
-建议在组织内配一份**伤疤对照集**作论据层: 按「伤疤(一句事实) → 教训(一句可迁移) →
-出处」逐维登记自家实付学费; 相关项目实例化时连同本单一起拷入, 无关项目只拷本单。
+**Companion-file design**: this file is the generic edition — no project-specific
+details; each dimension's paid-for lessons are distilled into the questions themselves.
+Keep an in-house **scar casebook** as the evidence layer: per dimension, log
+"scar (one-line fact) → lesson (one transferable line) → source." Related projects copy
+it in alongside this survey; unrelated projects take this file alone.
 
-**三态登记**（每条问完必落其一, 见文末登记表）:
+**Three-state disposition** (every item must land in exactly one; registry at the end):
 
-- **现在定** → 写进新工程章程（硬规则/布局）;
-- **显式挂起** → 立 TODO brief, 写明**触发条件**（到点它自己浮上来, 不靠人想起）;
-- **不适用** → 登记一行为什么, 防后来人重问。
+- **Decide now** → written into the new project's charter (hard rules / layout);
+- **Defer explicitly** → open a TODO brief with a **trigger condition** (it resurfaces on
+  its own — not when someone happens to remember);
+- **Not applicable** → one line on why, so nobody re-asks later.
 
-**范围**: 只收生命周期/可运维性。产品侧开局项（账号体系/权限模型/i18n）另行对话;
-测试策略不在此重复——实例化 `TEST-CONSTITUTION.template.md`。
-
----
-
-## 1. 交付与部署形态
-
-它怎么到用户手里？
-
-- 安装器 / 脚本部署 / SaaS / 镜像？谁执行安装, 多久一次, 有无离线（air-gap）站点？
-- 需要签名/公证吗——对这个发布面, 值得吗？
-- 站点本地配置（端口/域名/路径）谁拥有、怎么渲染、**接管既有站点**时怎么办？
-- 何时必须定: **首次给任何人安装之前**。
-
-## 2. 升级与热修
-
-第一版发出去之后, 变更怎么抵达？
-
-- 全量升级与热修是不是双通道？热修分支必须建自**已部署 commit**？
-- 升级通道本身随首装铺设并冒烟过吗（还是等第一次要用才发现没接线）？
-- DB 迁移怎么与升级共存（加性迁移/双注册表/checksum 锁定）？
-- 回滚制品是什么、放哪、保留多久？**版本可观测**——部署出去的实例怎么报告自己是谁？
-- 何时必须定: 版本可观测与回滚在**首次生产部署前**; 升级/热修通道在**第二个版本前**。
-
-## 3. 运维与站点事实账
-
-生产跑起来之后, 谁知道它长什么样？
-
-- **发布基线账**: 哪台机器现在跑哪个 commit——记在哪？
-- 备份: 谁做、放哪、**演练过恢复吗**？端口/防火墙收口清单？凭据放哪、怎么轮换、
-  验证时走不走「无默认配置」的显式路径？
-- 出问题谁先知道——监控告警还是等用户报障？事故处置沉淀到哪（runbook/skill）？
-- 部署工具链对目标环境的**字符集/locale** 过过冒烟吗？
-- 何时必须定: **生产切换窗口之前**。
-
-## 4. 实例拓扑与身份
-
-它会有几份在跑？
-
-- 单站 / 多站 / 舰队？实例登记总表放哪？
-- 实例身份怎么建立——自注册/指纹/出厂标识？异构会出现吗（二进制分叉怎么防）？
-- 何时必须定: **第二个实例出现之前**。
-
-## 5. 稳健性预算
-
-它坏的时候, 打算怎么坏？
-
-- 每条长连接/通道: 断线重连语义？重连后状态怎么恢复（快照回推）？
-- 超时/重试预算是多少（多层超时会不会叠加成整体不可用）？预期规模与并发？
-  扛不住时怎么退化？
-- **失败必须可见**: 禁静默钳制/静默吞错——上限外的请求是人话拒绝, 还是悄悄改小？
-- 何时必须定: **每条通道首次实现时**（常设规则, 不是一次性决定）。
-
-## 6. 环境阶梯与保真
-
-从开发机到生产之间有几级台阶？
-
-- 阶梯清单: 本地 → 专属试验田 → 彩排 → 生产; 每级允许做什么？
-- **关键依赖版本逐级一致吗**（DB/runtime/驱动）？彩排结论在版本不一致时不算数。
-- 网络路径有没有「假连通」可能（VPN/代理/端口转发让探测全绿实际不通）？
-- 多人/多会话共用一台机器时, 全局态（DB/env/端口）怎么不互踩？
-- 何时必须定: **首次拿彩排结果当证据之前**。
-
-## 7. 数据形态与备份
-
-哪些字节是不可再生的？
-
-- 珍贵数据清单（用户/上传件/DB）; 各自的备份与**已验证的**恢复路径？
-- 要接旧系统数据吗——迁移/适配层/兼容列, 隐藏前置条件是什么？
-- 数据里有无口令/个人信息？日志和备份会不会把它们带出去？
-- 何时必须定: **首次接旧数据或首次生产切换之前**。
-
-## 8. 外部依赖健康
-
-哪些不是你写的东西, 能弄死你？
-
-- 工具链/编译器/SDK/vendor 二进制清单（带「已确认可用」列）; license 与证书**到期表**;
-  付费服务与成本上限。
-- 每个关键依赖有健康探针吗？**失败会不会装成成功**（退出码 0 / 静默降级陷阱）？
-- 依赖挂掉时上层是报「依赖没起」, 还是只表现为超时挂起？
-- 何时必须定: 依赖**进入关键路径当刻**登记（常设规则）。
-
-## 9. AI 触手（本单的存在理由; 行业 readiness 清单没有这条）
-
-AI 拿什么建设并运维它？**开工第一天就定**——之后每一天都在为缺的触手付撞墙费。
-
-- **可达**: 每一层（前端/云/网关/板级/DB）AI 靠什么通道够到？密钥怎么管？
-  通道要能**自证连通**（防假连通）。
-- **试验田**: 每层一台 AI 可全权、坏了无所谓的常驻实例; 本地开发环境一键起、依赖清单
-  在案; 多会话共机怎么不互踩（争用点必须单 owner）。
-- **可观测**: 每层的版本/健康/遥测**可断言端点**——测试与运维共用同一批触点;
-  端点要能区分「没数据」与「没登记/没配置」。
-- **专用身份**: AI 测试用的账号/开关——单 owner、不 flap 全局状态、失败面透明。
-- **边界**: 白名单默认 + 独占资源三条件例外——触手与安全门**同时设计**,
-  后补边界 = 后撤触手。
-- 何时必须定: **开工第一天**。
+**Scope**: lifecycle and operability only. Product-side day-one items (accounts,
+permission model, i18n) are a separate conversation; test strategy isn't repeated here —
+instantiate `TEST-CONSTITUTION.template.md`.
 
 ---
 
-## 登记表（问诊产出; 拷入新工程后逐行填）
+## 1. Delivery & deployment form
 
-| # | 维度 | 三态 | 落点（章程条款 / brief id / 不适用理由） | 触发条件（挂起项必填） |
+How does it reach users?
+
+- Installer / scripted deploy / SaaS / images? Who performs installs, how often, any
+  offline (air-gapped) sites?
+- Does it need signing/notarization — and is that worth it for this distribution surface?
+- Site-local config (ports/domains/paths): who owns it, how does it get rendered, and
+  what happens when you **take over an already-installed site**?
+- Must decide by: **before the first install for anyone**.
+
+## 2. Upgrades & hotfixes
+
+After v1 ships, how do changes arrive?
+
+- Are full upgrades and hotfixes separate channels? Must hotfix branches fork from the
+  **deployed commit**?
+- Was the upgrade channel laid down and smoke-tested with the first install — or will you
+  discover it was never wired the first time you actually need it?
+- How do DB migrations coexist with upgrades (additive migrations / dual registry /
+  checksum pinning)?
+- What is the rollback artifact, where does it live, how long is it kept? **Version
+  observability** — how does a deployed instance report what it is?
+- Must decide by: version observability & rollback **before the first production deploy**;
+  upgrade/hotfix channels **before the second release**.
+
+## 3. Operations & site ground truth
+
+Once production is running, who knows what it looks like?
+
+- **Release baseline ledger**: which machine runs which commit right now — recorded where?
+- Backups: who makes them, where do they go, **has restore ever been drilled**?
+  Port/firewall closure checklist? Where do credentials live, how are they rotated, and
+  does credential verification take an explicit "no default config" path?
+- Who learns about problems first — monitoring, or a user report? Where does incident
+  response accumulate (runbook/skill)?
+- Has the deploy toolchain been smoke-tested against the target machine's
+  **charset/locale**?
+- Must decide by: **before the production cutover window**.
+
+## 4. Instance topology & identity
+
+How many of it will be running?
+
+- Single site / multi-site / fleet? Where is the instance registry?
+- How is instance identity established — self-registration / fingerprint / factory
+  marking? Will heterogeneity appear (how do you prevent binary forks)?
+- Must decide by: **before the second instance exists**.
+
+## 5. Robustness budget
+
+When it breaks, how is it supposed to break?
+
+- For every long-lived connection or channel: reconnect semantics? How is state restored
+  after reconnect (snapshot push-back)?
+- What are the timeout/retry budgets — do individually reasonable per-layer timeouts
+  stack into whole-system unavailability? Expected scale and concurrency? How does it
+  degrade past its limits?
+- **Failure must be visible**: no silent clamping, no swallowed errors — is an over-limit
+  request refused in plain language, or quietly shrunk?
+- Must decide by: **when each channel is first implemented** (a standing rule, not a
+  one-time decision).
+
+## 6. Environment ladder & fidelity
+
+How many rungs sit between the dev box and production?
+
+- Ladder inventory: local → dedicated sandbox → staging → production; what is allowed at
+  each rung?
+- **Are critical dependency versions pinned identical across rungs** (DB / runtime /
+  drivers)? A staging conclusion under mismatched versions proves nothing.
+- Can the network path produce **false connectivity** (VPN / proxy / port-forwarding
+  making probes green while real traffic goes nowhere)?
+- When several people or sessions share one machine, how does global state
+  (DB/env/ports) avoid cross-trampling?
+- Must decide by: **before the first time staging results are used as evidence**.
+
+## 7. Data shape & backups
+
+Which bytes are irreplaceable?
+
+- Inventory of precious data (users / uploads / DB); each one's backup and **verified**
+  restore path?
+- Ingesting legacy data? Migration / adapter layers / compat columns — what are the
+  hidden prerequisites?
+- Any secrets or personal data inside? Do logs and backups carry them out the door?
+- Must decide by: **before the first legacy ingestion or the first production cutover**.
+
+## 8. External dependency health
+
+Which things you didn't write can kill you?
+
+- Inventory of toolchains / compilers / SDKs / vendor binaries (with a "confirmed
+  working" column); license & certificate **expiry table**; paid services and cost
+  ceilings.
+- Does every critical dependency have a health probe? **Can its failure masquerade as
+  success** (exit code 0 / silent degradation)?
+- When a dependency is down, does the layer above say "dependency not running" — or does
+  it just hang and time out?
+- Must decide by: logged **the moment a dependency enters the critical path** (standing
+  rule).
+
+## 9. Agent reach (this survey's reason to exist; absent from industry readiness checklists)
+
+What does the AI use to build and operate this? **Decide on day one** — every later day
+pays wall-bumping tax for each missing channel.
+
+- **Reachability**: at every tier (frontend / cloud / gateway / board / DB), what channel
+  does the agent use to get there? How are keys managed? Channels must be able to
+  **prove their own connectivity** (anti false-green).
+- **Sandbox**: per tier, one standing instance the agent fully owns and can afford to
+  break; the local dev environment starts with one command, dependency list on record;
+  co-located sessions must not trample each other (contended state has a single owner).
+- **Observability**: assertable version/health/telemetry endpoints per tier — tests and
+  operations share the same touchpoints; endpoints must distinguish "no data" from
+  "not registered / not configured."
+- **Dedicated identity**: agent-only accounts and toggles — single-owner, no
+  global-state flapping, transparent failure surface.
+- **Boundaries**: allowlist by default + the exclusive-resource three-condition
+  exception — design reach and guardrails **together**; boundaries retrofitted later =
+  reach revoked later.
+- Must decide by: **day one**.
+
+---
+
+## Registry (the survey's output; copy into the new project and fill per row)
+
+| # | Dimension | Disposition | Landing (charter clause / brief id / N/A reason) | Trigger (required for deferred) |
 |---|---|---|---|---|
-| 1 | 交付与部署形态 | | | |
-| 2 | 升级与热修 | | | |
-| 3 | 运维与站点事实账 | | | |
-| 4 | 实例拓扑与身份 | | | |
-| 5 | 稳健性预算 | | | |
-| 6 | 环境阶梯与保真 | | | |
-| 7 | 数据形态与备份 | | | |
-| 8 | 外部依赖健康 | | | |
-| 9 | AI 触手 | | | |
+| 1 | Delivery & deployment form | | | |
+| 2 | Upgrades & hotfixes | | | |
+| 3 | Operations & site ground truth | | | |
+| 4 | Instance topology & identity | | | |
+| 5 | Robustness budget | | | |
+| 6 | Environment ladder & fidelity | | | |
+| 7 | Data shape & backups | | | |
+| 8 | External dependency health | | | |
+| 9 | Agent reach | | | |

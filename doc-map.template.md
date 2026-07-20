@@ -1,47 +1,52 @@
-# doc-map — 文档层级 × 注入时机总契约
+# doc-map — document tiers × injection timing, the master contract
 
 status: ACTIVE
 
-本文件回答两个问题: ① 每类信息该写到哪（唯一真相源）② 每份文档在什么时机进入 AI 会话
-上下文。**注入时机是一等维度**: 开工必读集是每次会话的固定上下文开销, **只能变小不能
-变大**——新文档想进开工必读, 必须挤掉等量内容, 否则一律按需注入。
+This file answers two questions: ① where each kind of information lives (its single
+source of truth) ② when each document enters AI session context. **Injection timing is a
+first-class dimension**: the session-start reading set is a fixed context cost paid by
+every session — it **may only shrink, never grow**. A new document that wants into the
+start set must displace equal volume; otherwise it is injected on demand.
 
-## 四层制
+## The four tiers
 
-| 层 | 内容 | 注入时机 | 变更规则 |
+| Tier | Contents | Injection timing | Change rules |
 |---|---|---|---|
-| L0 章程/法典 | `AGENTS.md` · 现役法典（执行规则, 建议 ≤3-4 份） | **每会话开工必读**（保持小） | 只随用户决策变更; 法典转正/退役须用户拍板 |
-| L1 操作系统 | 规范 `conventions/` · 契约 `contracts/` · 技能 `skills/` · 脚本 `scripts/` · 领域事实（设备表/词汇表/环境表） | **按需**（下表触发） | 改动须同步受影响的规则/脚本 |
-| L2 活状态 | `briefs/` 状态头与活跃 brief · 账本 · 生成式索引 `MAP.md` | 认领/记账/裁决时 | 每次收工回写; 收口移 archive |
-| L3 历史 | `handoff/` · `archive/` · 历史 runbook · `releases/` | **默认不注入**, 仅考古/审计显式引用 | 只进不改 |
+| L0 charter/doctrine | `AGENTS.md` · active doctrines (execution rules, aim ≤3-4 files) | **Read at every session start** (keep small) | Changes only follow human decisions; promoting or retiring a doctrine is a human call |
+| L1 operating system | conventions `conventions/` · contracts `contracts/` · skills `skills/` · scripts `scripts/` · domain facts (device tables / glossary / environment tables) | **On demand** (trigger table below) | A change must update the affected rules/scripts in the same move |
+| L2 live state | `briefs/` status headers & active briefs · ledgers · generated index `MAP.md` | On claim / on logging / on adjudication | Written back at every session close; moved to archive at campaign close |
+| L3 history | `handoff/` · `archive/` · historical runbooks · `releases/` | **Never by default**; only explicit archaeology or audit reads it | Append-only |
 
-## L1 按需注入触发表（做什么 → 读什么; 按本项目填）
+## L1 on-demand trigger table (doing what → read what; fill per project)
 
-| 触发时机 | 注入文档 |
+| Trigger | Inject |
 |---|---|
-| 写 {{层/语言}} 代码前 | `conventions/code-standards-{{tier}}.md` |
-| 新建模块 / 调试反复碰壁时 | `retrieval-optimized-code.md` · `ai-debuggability.md` |
-| 碰任何跨层接缝前 | `contracts/<对应契约>` + 测试向量 |
-| 碰任何独占资源（真机/生产库/线上环境）前 | {{领域事实文档}} + `ai-workflow.md` §安全边界 |
-| 执行部署/冒烟/排障 | 对应 skill（触发时机写在 skill description 里） |
-| 对应事故发生时 | `runbooks/<incident>` |
-| 发布/推送前 | {{git/发布工作流文档}} |
+| Before writing {{tier/language}} code | `conventions/code-standards-{{tier}}.md` |
+| Creating a new module / debugging keeps hitting walls | `retrieval-optimized-code.md` · `ai-debuggability.md` |
+| Before touching any cross-tier seam | `contracts/<the contract>` + its test vectors |
+| Before touching any exclusive resource (hardware / production DB / live env) | {{domain-facts doc}} + `ai-workflow.md` §safety |
+| Running deploy / smoke / diagnosis | the matching skill (its trigger lives in the skill description) |
+| When the matching incident occurs | `runbooks/<incident>` |
+| Before release / push | {{git & release workflow doc}} |
 
-## 信息路由表（同一信息禁止写两处; 跨文件引用用路径链接）
+## Information routing table (nothing written twice; cross-file references are path links)
 
-| 信息类型 | 唯一去处 |
+| Information type | Its one home |
 |---|---|
-| 计划/决策/边界 | 章程（工作区级）· 法典（线级）· brief（块级） |
-| 运行时事实（带日期） | 所属 brief 或账本行; 发布事实进 `releases/` |
-| 可重复操作 | `skills/` 或 `scripts/`（**可执行优先于散文**） |
-| 协议/接口 | `contracts/` |
-| 领域硬事实（设备/环境/版本） | {{领域事实目录}} |
-| 工作块细节 | `briefs/<id>.md` |
+| Plans / decisions / boundaries | charter (workspace level) · doctrine (track level) · brief (block level) |
+| Runtime facts (dated) | the owning brief or a ledger row; release facts go to `releases/` |
+| Repeatable procedures | `skills/` or `scripts/` (**executable beats prose**) |
+| Protocols / interfaces | `contracts/` |
+| Hard domain facts (devices / environments / versions) | {{domain-facts directory}} |
+| Work-block detail | `briefs/<id>.md` |
 
-## 卫生规则
+## Hygiene rules
 
-- 发现文档与实物不符: **先修文档再干活**。
-- 孤儿文档（不在层表内）: 要么登记进 L1 并明确唯一职责, 要么归档。
-- 对账两档: 确定型脚本（状态头/路径存在性, 随手跑）+ 判断型多 agent 只读审计
-  （战役收口必跑）; 发现项进下一个文档卫生波次。
-- 状态只写 brief 头与账本; 禁长篇会话散文; **brief + 状态行是唯一交棒介质**。
+- A document contradicts reality: **fix the document before doing the work**.
+- Orphan documents (outside the tier table): either register into L1 with one clear
+  responsibility, or archive.
+- Two-mode reconciliation: a deterministic script (status headers / path existence; run
+  casually) + a judgment-based multi-agent read-only audit (must run at campaign close);
+  findings feed the next hygiene wave.
+- State lives only in brief headers and ledgers; no long conversational prose;
+  **brief + status line is the only handoff medium**.

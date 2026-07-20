@@ -1,25 +1,29 @@
-# POLISH-LEDGER — 打磨专项账（逐条拍板制）
+# POLISH-LEDGER — the polish ledger (item-by-item approval)
 
-status: ACTIVE（账本）
+status: ACTIVE (ledger)
 
-规则: 每条打磨项登记一行, **用户讨论拍板(APPROVED)后才执行**; 交付记证据
-（commit + 质量门）。本账只管「好不好看/一致性」, 不改行为语义; 设计决策真相源 =
-{{设计指导文档}}, 本账不重复定义风格——指导未覆盖处先在本账提案、拍板后补进指导,
-不自由发挥。
+Rule: each polish item logs one row and executes only **after discussion and approval
+(APPROVED)**; deliver with evidence (commit + quality gate). This ledger owns
+"looks/consistency" only — never behavioral semantics. The design source of truth is
+{{the design guidance doc}}; this ledger does not redefine style — where the guidance
+has no coverage, propose here first, and after approval fold the ruling back into the
+guidance. No freestyling.
 
-## 硬约束（每条执行不可破）
+## Hard constraints (unbreakable per entry)
 
-1. {{契约冻结: 不改对后端的字段名/状态码分支/信封读法}}
-2. {{可调试性底线: 已有测试锚点不删不改名, 新元素按需补}}
-3. {{技术底座边界: 不引新 UI 库/框架}}
-4. {{质量门命令}}
-5. 涉及布局/交互结构重组的条目在「结构重组?」列显式标**是**, 用户逐条拍板;
-   标否 = 纯视觉/令牌级。
+1. {{Contract freeze: no changes to backend-facing field names / status-code branches /
+   envelope reads}}
+2. {{Debuggability floor: existing test anchors never removed or renamed; new elements
+   add them as needed}}
+3. {{Stack boundary: no new UI libraries or frameworks}}
+4. {{Quality-gate commands}}
+5. Items that reorganize layout or interaction structure set the "restructure?" column
+   to **yes** and get item-by-item human approval; "no" = purely visual / token-level.
 
-## 状态机
+## State machine
 
-LOGGED → APPROVED → DOING → DONE(证据) ｜ REJECTED(记理由)
+LOGGED → APPROVED → DOING → DONE (evidence) | REJECTED (reason)
 
-| id | 域 | 项 | 结构重组? | 状态 |
+| id | domain | item | restructure? | status |
 |---|---|---|---|---|
-| PL-1 | | | 否 | LOGGED |
+| PL-1 | | | no | LOGGED |

@@ -1,37 +1,44 @@
-# {{ID}} — {{一句话标题}}
+# {{ID}} — {{one-line title}}
 
 status: TODO
 who: —, when: —
-来源: {{谁/何时/为什么立案; 引用相关账本条目或决策}}
+origin: {{who/when/why this was opened; cite the ledger entry or decision}}
 
-## 1. 目标与背景
+## 1. Goal & background
 
-{{要达成什么; 为什么现在做; 上下游依赖。引用代码用 path:symbol, 不用行号。}}
+{{What to achieve; why now; upstream/downstream dependencies. Reference code as
+path:symbol, not line numbers.}}
 
-## 2. 工作项
+## 2. Work items
 
-{{分波次/分项列表, 每项可独立验收; 涉及独占资源的项标 [独占资源] 以便串行排窗口。}}
+{{Waves/items, each independently acceptable; mark exclusive-resource items
+[exclusive-resource] so they queue serially into windows.}}
 
-## 3. 边界
+## 3. Boundaries
 
-{{只动哪些目录（白名单显式列文件更佳）; 禁触清单。
-需用户授权的 gate 显式列出——「开工」不解锁这些, 须当次显式给出。}}
+{{Directories this block may touch (an explicit file allowlist is better); forbidden
+list. Gates requiring human authorization listed explicitly — "start" does not unlock
+them; they are granted per occasion.}}
 
 ## 4. Verify
 
-{{可执行命令清单, 写死在这里; 全绿标准。示例:
-- `{{build/lint/typecheck 命令}}`
-- `{{本块测试命令}}`
-- `{{scripts/verify/ 下本块的一键重验脚本}}`}}
+{{Executable command list, written here verbatim; the all-green bar. Example:
+- `{{build/lint/typecheck commands}}`
+- `{{this block's test command}}`
+- `{{this block's one-command re-verification script under scripts/verify/}}`}}
 
-## 启动（说「开工 {{ID}}」即执行本节）
+## Start (saying "start {{ID}}" executes this section)
 
-1. 按章程读序进入状态, 重读本 brief 全文; 状态头 TODO → DOING(who/when)。
-2. {{建议执行序: 先做哪项、为什么（无争议 bug 优先/共享地基先行等）。}}
-3. {{边界重申: gate 部分仍需当次授权; 独占资源窗口如何申请。}}
-4. 交付回写本 brief 状态头; 证据 = commit + Verify 输出。
+1. Enter via the charter's reading order; re-read this brief in full; status header
+   TODO → DOING (who/when).
+2. {{Suggested execution order: what first, and why (undisputed bugs first / shared
+   foundations first, etc.).}}
+3. {{Boundary restatement: gated parts still need per-occasion authorization; how to
+   request the exclusive-resource window.}}
+4. On delivery, write the status header back; evidence = commit + Verify output.
 
-## 5. 交付
+## 5. Delivery
 
-四件套: 代码 + 测试 + verify 脚本 + 文档一行索引。四缺一不算完。
-收口后若本 brief 属战役块 → 移 `briefs/archive/`（保持关账原样）。
+Four pieces: code + tests + verify script + a one-line doc index. Missing any = not done.
+If this brief belongs to a campaign, move it to `briefs/archive/` at close (kept exactly
+as closed).

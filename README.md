@@ -1,66 +1,85 @@
-# agent-native-workspace — AI 主导工程的工作区模板包
+# agent-native-workspace — a workspace template pack for AI-led engineering
 
-从一个真实生产工程（FPGA 远程实验室, 2026-07）的工作区提取的 project-agnostic 机制模板。
-适用: 以 AI 会话为主要生产力、人类做裁决的任意软件/硬件项目。
-各模板内 `{{...}}` 为待填变量, 「示例:」段落替换为本项目事实。
+Project-agnostic mechanism templates extracted from a real production project (an FPGA
+remote-lab platform, 2026-07). For any software or hardware project where AI sessions are
+the primary workforce and humans adjudicate.
 
-> **新工程开局一句话（贴给任意模型, 这是本包唯一需要人记住的入口）**:
-> 「读 `<本目录>/README.md`, 按实例化步骤执行; 第 2 步立项问诊由你主动逐条发起。」
-> 开局问诊等行为规约的**真相源是本 README**——不依赖任何单一助手的私有记忆,
-> 换模型不掉线。
+`{{...}}` marks fill-in variables; replace "Example:" passages with your project's facts.
 
-## 设计原则（为什么长这样）
+> **The one-line bootstrap (paste to any model — the only thing a human needs to remember):**
+> "Read `<this directory>/README.md`, follow the instantiation steps; in step 2, you
+> proactively run the inception survey, item by item."
+> The source of truth for behavioral protocols like that is **this README** — never any
+> single assistant's private memory. Swap models and nothing is lost.
 
-1. **稀缺资源经济学**: AI 项目的瓶颈不是代码生成量, 而是
-   **独占资源窗口（真机/生产环境）· 用户裁决带宽 · 上下文额度**。一切机制围绕节约这三样。
-2. **注入时机是一等维度**: 文档多不是问题, 全量注入才是。每类文档声明自己何时进入
-   会话上下文（见 `doc-map.template.md`）; 开工必读集是固定开销, 只能变小不能变大。
-3. **可执行优先于散文**: 可重复操作沉淀为脚本/skill 而非文档; 不可执行的知识按
-   ai-debuggability 四级优先编码到 Agent 可行动处。
-4. **歧义不停工**: 判断分歧记账本继续干活, 攒批供用户裁决——不拿裁决带宽换进度。
-5. **任意模型可冷启动**: 章程/法典/brief 自包含, 不依赖会话历史与专有工具。
-6. **生命周期决策前置**: 功能需求会自己找上门, 生命周期需求（部署/升级/运维/稳健性/
-   AI 触手…）只在事故里现身——开局走一遍 `inception-survey`, 逐条三态登记
-   （现在定 / 显式挂起带触发 / 不适用）, 由 AI 主动发起。
+## Design principles (why it looks like this)
 
-## 内容与依赖关系
+1. **Scarce-resource economics**: the bottleneck of an AI-led project is not code
+   generation — it is **exclusive-resource windows (real hardware / production), human
+   adjudication bandwidth, and context budget**. Every mechanism here economizes those three.
+2. **Injection timing is a first-class dimension**: having many documents is not the
+   problem — injecting them all is. Every document class declares when it enters session
+   context (see `doc-map.template.md`); the session-start reading set is a fixed overhead
+   that may only shrink, never grow.
+3. **Executable beats prose**: repeatable procedures become scripts and skills, not
+   paragraphs; non-executable knowledge is encoded where an agent can act on it, following
+   the four-level priority in ai-debuggability.
+4. **Ambiguity never stops work**: log judgment calls to a ledger and keep moving; batch
+   them for human adjudication — never trade adjudication bandwidth for progress.
+5. **Any model can cold-start**: charter, doctrines, and briefs are self-contained — no
+   dependence on chat history or proprietary tooling.
+6. **Lifecycle decisions up front**: feature requirements come find you; lifecycle
+   requirements (deployment, upgrades, operations, robustness, agent reach…) only show up
+   in incidents — at the most expensive possible moment. Run the `inception-survey` at
+   project start and give every dimension one of three dispositions (decide now / defer
+   explicitly with a trigger / not applicable), driven proactively by the AI.
 
-| 文件 | 是什么 | 依赖 |
+## Contents and dependencies
+
+| File | What it is | Depends on |
 |---|---|---|
-| `inception-survey.template.md` | 立项问诊单（生命周期九维 + 三态登记; **立项对话第一件事**, 读一次后永不注入; 各维实付教训已升华进问句本身） | 产出落 AGENTS 与 brief |
-| `doc-map.template.md` | 文档层级 × 注入时机总契约（**先读/先填这份**） | — |
-| `AGENTS.template.md` | 工作区章程（读序/布局/硬规则/开工协议） | doc-map |
-| `ai-workflow.template.md` | 会话协议/工作块协议/并行规则/经济学/安全边界 | AGENTS, doc-map |
-| `TEST-CONSTITUTION.template.md` | 测试宪法（两档制 + 仿真自证陷阱 + 门禁语义） | — |
-| `retrieval-optimized-code.template.md` | 可寻址性规则（反向量索引裁决） | — |
-| `ai-debuggability.template.md` | 不可推导知识的编码优先级 + harness 拥有环境 | — |
-| `ledgers/` | 账本三件套模板 + 按裁决方式分账原则 | ai-workflow |
-| `brief.template.md` | 工作块 brief 模板（含 `## 启动` 节） | AGENTS 开工协议 |
-| `skill.template.md` | 技能模板（陷阱固化形态） | — |
+| `inception-survey.template.md` | Inception survey (nine lifecycle dimensions + three-state disposition; **the first thing in the founding conversation**, read once and never injected again; hard-won lessons are distilled into the questions themselves) | outputs land in AGENTS + briefs |
+| `doc-map.template.md` | Document tiers × injection timing, the master contract (**read/fill this first**) | — |
+| `AGENTS.template.md` | Workspace charter (reading order / layout / hard rules / start-of-work protocol) | doc-map |
+| `ai-workflow.template.md` | Session protocol / work-block protocol / parallelism rules / economics / safety boundaries | AGENTS, doc-map |
+| `TEST-CONSTITUTION.template.md` | Testing constitution (two-tier testing + the simulator self-certification trap + gate semantics) | — |
+| `retrieval-optimized-code.template.md` | Addressability rules (the anti-vector-index ruling) | — |
+| `ai-debuggability.template.md` | Priority encoding for non-derivable knowledge + harness-owns-environment | — |
+| `ledgers/` | The three ledgers + the split-by-adjudication principle | ai-workflow |
+| `brief.template.md` | Work-block brief template (with its `## Start` section) | AGENTS start protocol |
+| `skill.template.md` | Skill template (the fossilized-trap form) | — |
 
-## 实例化步骤
+## Instantiation steps
 
-1. 拷贝本目录到新项目, 去掉 `.template` 后缀。
-2. **开局问诊**: 由 AI 在立项对话中主动走 `inception-survey`（生命周期九维）, 逐条
-   三态登记——「现在定」的结论供第 4 步写进章程,「挂起」的立 TODO brief 带触发条件。
-   （建议在组织内自建一份「伤疤对照集」——逐维登记自家实付学费作论据, 格式见
-   问诊单配对件说明; 本包不含任何具体工程的对照集。）
-3. **填 doc-map**: 决定本项目有哪几层文档、各层注入时机、开工必读集内容（建议 ≤4 份）。
-4. 填 `AGENTS.md`: 布局/节点代号表/质量门命令/安全白名单（`{{...}}` 全替换,
-   含问诊「现在定」项）。
-5. 按需裁剪: 无硬件 → 删安全边界的真机段, 但保留「独占资源三条件例外制」骨架
-   （生产库/线上环境同理适用）; 无双线并行 → 删 contracts 并行边界段, 保留契约先行原则。
-6. 建 `briefs/` `contracts/` `scripts/verify/` `scripts/audit/` 目录; 第一份 brief 用
-   brief.template 起（含问诊挂起项）。
-7. 对账脚本自建两档: brief 状态头校验（确定型, 零依赖, 随手跑）+
-   doc-vs-reality 多 agent 只读审计（判断型, 收口跑）——源实现在私有源工作区,
-   未随本包发布, 按上述两档描述自建即可。
+1. Copy this directory into the new project; drop the `.template` suffixes.
+2. **Run the inception survey**: in the founding conversation, the AI proactively walks
+   `inception-survey` (nine lifecycle dimensions), giving each item a three-state
+   disposition — "decide now" conclusions feed step 4's charter; deferred items become
+   TODO briefs with explicit triggers. (Recommended: keep an in-house "scar casebook" —
+   your own paid-for lessons per dimension, as evidence; format in the survey's
+   companion-file note. This pack ships no project-specific casebook.)
+3. **Fill doc-map**: decide this project's document tiers, each tier's injection timing,
+   and the session-start reading set (aim for ≤4 files).
+4. Fill `AGENTS.md`: layout / canonical-name table / quality-gate commands / safety
+   allowlist (replace every `{{...}}`, including the survey's "decide now" outcomes).
+5. Trim to fit: no hardware → delete the real-hardware safety sections but keep the
+   "exclusive-resource three-condition exception" skeleton (production databases and live
+   environments need it just the same); no dual-track parallelism → delete the contracts
+   parallel-boundary section, keep the contract-first principle.
+6. Create `briefs/` `contracts/` `scripts/verify/` `scripts/audit/`; start the first brief
+   from brief.template (include the survey's deferred items).
+7. Build two reconciliation checks: a brief status-header validator (deterministic,
+   zero-dependency, run casually) + a doc-vs-reality multi-agent read-only audit
+   (judgment-based, run at campaign close). The source implementations live in the private
+   origin workspace and don't ship with this pack; rebuild from the two descriptions above.
 
-## 出处与维护
+## Provenance and maintenance
 
-提取自一个私有生产工作区（FPGA 远程实验室, DOCOPS-1, 2026-07-19）; **本仓是其公开
-分发镜像**。机制在源工作区持续演进, 本仓不自动跟进——重大机制升级时手动同步快照。
-源工程的「伤疤对照集」（各维实付学费明细账）属内部经验层, 不随公开包发布——
-其可迁移教训已升华进问诊单的问句本身, 公开版不因此缺信息。
+Extracted from a private production workspace (an FPGA remote-lab platform; DOCOPS-1,
+2026-07-19); **this repo is its public distribution mirror**, English edition. Mechanisms
+keep evolving in the origin workspace; this repo does not auto-track — major upgrades are
+synced as manual snapshots. The origin project's own scar casebook (its itemized paid-for
+lessons) is internal and not published — its transferable lessons are already distilled
+into the survey's questions, so nothing is missing here.
 
-License: MIT（见 `LICENSE`）。
+License: MIT (see `LICENSE`).

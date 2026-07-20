@@ -1,46 +1,62 @@
-# {{PROJECT}} — 工作区章程
+# {{PROJECT}} — workspace charter
 
-本工作区是 {{一句话: 项目是什么 + 本工作区职能}}。本文件对任意模型会话有效
-（Claude/GPT/…, 不依赖专有工具）。
+This workspace is {{one line: what the project is + what this workspace does}}. This file
+applies to sessions of any model (Claude / GPT / …; no proprietary tooling assumed).
 
-**开工读序: 本文件 → 现役法典（{{法典清单, ≤3-4 份}}）→ 认领的 brief。**
-看板一条命令: `grep -h "^status:" briefs/*.md`（配状态头校验脚本随手跑）。
-文档层级与注入时机: `doc-map.md`——新文档先过它再落盘, 开工必读集只减不增。
+**Session-start reading order: this file → active doctrines ({{doctrine list, ≤3-4
+files}}) → the claimed brief.**
+The kanban is one command: `grep -h "^status:" briefs/*.md` (backed by the status-header
+validator; run it casually).
+Document tiers & injection timing: `doc-map.md` — a new document passes through it before
+landing; the session-start reading set only shrinks.
 
-**开工协议**: 凡承载可认领工作的 brief 必须内嵌 `## 启动` 节——自包含开工 prompt
-（认领动作、执行序、边界重申、verify、状态回写）。用户说「**开工 <id>**」即为认领指令,
-等同粘贴该节全文: 会话按本读序进入状态 → 打开对应 brief → 执行其 `## 启动` 节。
-**「开工」不解锁 gate**——凡 brief 标注需用户勾选/授权的部分, 仍需当次显式给出。
+**Start-of-work protocol**: every brief carrying claimable work must embed a `## Start`
+section — a self-contained start prompt (claim action, execution order, boundary
+restatement, verify, status write-back). The human saying "**start <id>**" is the claim
+instruction, equivalent to pasting that section: the session enters via the reading
+order → opens the brief → executes its `## Start`. **"Start" unlocks no gates** —
+anything the brief marks as requiring human authorization still needs it explicitly,
+that time.
 
-## 布局
+## Layout
 
-- `{{code 位置}}` — 代码真相源（{{worktree/branch/junction 说明; 代码与文档各 commit 到哪}}）。
-- `briefs/` — 现役法典 + 活跃 brief + 账本; 已收口战役在 `briefs/archive/`（保持关账原样）。
-- `contracts/` — 跨层契约唯一真相源 + 测试向量。
-- `docs/` — `conventions/` · {{领域事实目录}} · `runbooks/` · `guides/`;
-  `archive/`/`handoff/` 只进不改。
-- `scripts/` — `dev/` · `verify/`（一键重验, 交付四件套之一）· `release/` · `audit/`（对账）。
-- `MAP.md` — 生成式全仓地图（脚本重渲染, 禁手改）。
+- `{{code location}}` — code source of truth ({{worktree/branch/junction notes; where
+  code vs docs each get committed}}).
+- `briefs/` — active doctrines + live briefs + ledgers; closed campaigns in
+  `briefs/archive/` (kept exactly as closed).
+- `contracts/` — single source of truth for cross-tier contracts + test vectors.
+- `docs/` — `conventions/` · {{domain-facts dir}} · `runbooks/` · `guides/`;
+  `archive/` and `handoff/` are append-only.
+- `scripts/` — `dev/` · `verify/` (one-command re-verification; one of the four delivery
+  pieces) · `release/` · `audit/` (reconciliation).
+- `MAP.md` — generated repo map (script-rendered; hand-editing forbidden).
 
-## 节点/术语代号（永远用这些）
+## Canonical names (always these)
 
-{{代号表: 每层/每系统一个 canonical 名, 全仓禁同义词。示例: client / cloud / gateway / …
-易混概念显式拆分（如「仪器 FPGA」vs「用户 FPGA」——永远不说笼统的 FPGA）}}
-词汇权威: `{{glossary 路径}}`。
+{{Name table: one canonical name per tier/system, synonyms banned repo-wide. Example:
+client / cloud / gateway / … Split confusable concepts explicitly (e.g. "instrument
+FPGA" vs "user FPGA" — never the bare word "FPGA").}}
+Vocabulary authority: `{{glossary path}}`.
 
-## 硬规则
+## Hard rules
 
-1. **质量门**: {{每 commit 必绿的命令清单, 如 build + lint + typecheck}}。达不到就不合入。
-2. **边界**: {{各线只落哪些目录; 禁写区（只读参照树一律禁写）}}。
-3. **独占资源安全**: 见 `ai-workflow.md` §安全边界——默认只碰 {{白名单环境}};
-   {{生产/独占资源}} **三条件逐次例外, 不存在预授权**。
-4. **git**: {{推送规则: AI 可推哪些分支; 严禁动哪些分支; hotfix 分支必须建自已部署 commit}}。
-5. **歧义不停工**: 记 `briefs/AMBIGUITY-LEDGER.md`, 继续干活。
-6. **文档纪律**: 状态只写 brief 头与账本; 不写长篇会话散文; archive 只进不改。
+1. **Quality gate**: {{the commands every commit must keep green, e.g. build + lint +
+   typecheck}}. Not green, not merged.
+2. **Boundaries**: {{which directories each track may touch; forbidden zones (read-only
+   reference trees are never written)}}.
+3. **Exclusive-resource safety**: see `ai-workflow.md` §safety — touch only
+   {{allowlisted environments}} by default; {{production / exclusive resources}} are
+   **exception-by-exception under the three conditions; pre-authorization does not
+   exist**.
+4. **git**: {{push rules: which branches the AI may push; branches never to touch;
+   hotfix branches fork from the deployed commit}}.
+5. **Ambiguity never stops work**: log to `briefs/AMBIGUITY-LEDGER.md`, keep moving.
+6. **Documentation discipline**: state lives in brief headers and ledgers; no long
+   conversational prose; archive is append-only.
 
-## 版本冻结对照（防漂移）
+## Frozen-tree table (anti-drift)
 
-| 树 | 状态 |
+| Tree | Status |
 |---|---|
-| {{现役开发线}} | **现役唯一开发线**; 发布来源 |
-| {{旧线/冻结参照}} | 冻结存档, 只读; {{何条件下才允许合并/回传}} |
+| {{active dev line}} | **The only active dev line**; release source |
+| {{legacy / frozen reference}} | Frozen archive, read-only; {{conditions under which merging back is allowed}} |

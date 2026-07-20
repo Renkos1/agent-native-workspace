@@ -1,23 +1,29 @@
 ---
 name: {{kebab-name}}
-description: {{一句话: 做什么 + 何时用。触发时机写进 description——它决定 skill 何时被注入; 写「当 X 时使用」比写功能罗列有效。}}
+description: {{One line: what it does + when to use it. Put the trigger into the description — it decides when the skill gets injected; "use when X" beats a feature list.}}
 ---
 
-{{目标一句话。skill 收「带陷阱的重复操作」——步骤谁都能列, 陷阱才是本体。}}
+{{Goal in one line. Skills exist for "repeatable procedures with traps" — anyone can
+list the steps; the traps are the actual content.}}
 
-1. **{{步骤名}}**: `{{确切命令}}` → 期望 {{输出/状态; 给具体值, 如「200 且 lane:"nest"」}}。
-2. **{{步骤名}}**: `{{命令}}` → 期望 {{...}}。
-3. …（每步可独立判 PASS/FAIL; 报告逐层结果）
+1. **{{step name}}**: `{{exact command}}` → expect {{output/state; concrete values,
+   e.g. "200 with lane:\"nest\""}}.
+2. **{{step name}}**: `{{command}}` → expect {{...}}.
+3. … (each step independently PASS/FAIL; report per-layer results)
 
-## 陷阱（本 skill 存在的主要理由——不写就会再踩的坑）
+## Traps (the reason this skill exists — the pits that get re-stepped-in unless written down)
 
-- {{陷阱 1: 症状 → 根因 → 正确动作。示例（源工作区）: 烧写后链路显示降级 =
-  漏了强制的二次重启, 不是烧写失败。}}
-- {{陷阱 2: 环境怪癖。示例: 该主机无 RTC——日志墙钟不可信, 用开机相对偏移;
-  刚启动时服务短暂报 inactive, 等 ~60s 再下结论。}}
-- {{陷阱 3: 破坏性副作用。示例: 某常规操作会静默复位远端/清空固件——测试中途禁用。}}
+- {{Trap 1: symptom → root cause → correct action. Example (origin workspace): degraded
+  link status after flashing = the mandatory second reboot was skipped, not a flash
+  failure.}}
+- {{Trap 2: environment quirk. Example: this host has no RTC — log wall-clock times lie;
+  use offsets from boot. Services briefly report inactive right after boot; wait ~60s
+  before concluding.}}
+- {{Trap 3: destructive side effect. Example: a certain routine operation silently
+  resets the remote end / wipes its firmware — forbidden mid-test.}}
 
-## 故障二分表
+## Fault bisection table
 
-{{第 N 步失败 → 挖哪一层, 一行一条。让排障 O(层数) 而非 O(全链)。示例:
-1-2 失败 → web 层 · 3 失败 → 本地依赖 · 4-5 失败 → 网关 · 6-7 失败 → 板级}}
+{{Step N fails → dig in which layer; one line each. Makes diagnosis O(layers), not
+O(chain). Example: 1-2 fail → web tier · 3 fails → local dependencies · 4-5 fail →
+gateway · 6-7 fail → board}}

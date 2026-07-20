@@ -1,50 +1,66 @@
-# 测试宪法 — 单端内部 / 跨系统真实联调
+# Testing constitution — single-system internal / cross-system real integration
 
 status: ACTIVE
-适用: 全线。与账本并列的顶层规约。
+Applies to: all tracks. Top-level law, peer to the ledgers.
 
-## 第一原则
+## First principles
 
-1. **零人工**: 所有验证由模型操作, 改代码/部署前不靠人手操一遍纠错。
-2. **可重放**: 测试沉淀为脚本, 进门禁, 可重复运行。
-3. **真实模拟用户**: 前端/入口验证必须 UI 级模拟真实用户流（登录→导航→操作→断言渲染）,
-   不止 API 探测。
-4. **跨系统留测**: 涉及多系统/外部依赖的功能, 必须留一份「数据链路正确性」测试集,
-   **长期保留**, 改代码/部署前复跑。
-5. **仿真非联调**: mock/仿真器属单端便利件, **不能顶替**跨系统验证。跨系统的账只有与
-   真实系统联调过才算平。
+1. **Zero manual**: all verification is model-operated; no code change or deploy relies
+   on a human clicking through first.
+2. **Replayable**: tests densify into scripts, enter the gate, and can be re-run at will.
+3. **Real user simulation**: frontend/entry verification must drive the real UI as a
+   user would (log in → navigate → operate → assert rendering) — not API probes alone.
+4. **Cross-system tests are kept**: any feature spanning systems or external
+   dependencies keeps a "data-path correctness" test set, **retained long-term**, re-run
+   before changes and deploys.
+5. **Simulation is not integration**: mocks and simulators are single-system
+   conveniences and **cannot substitute** for cross-system verification. Cross-system
+   accounts settle only against the real system.
 
-## 两档测试
+## The two tiers
 
-### 档一: 单端内部（always-on, 随时可跑, 不需外部真实系统）
+### Tier 1: single-system internal (always-on; runs anytime; needs no external real system)
 
-- service/纯函数单测; API 契约冒烟; UI E2E（无头驱动真实 UI, 打真实后端 + fixture 库）。
-- **仿真器/mock**: 说真实协议, 让真实代码路径**零改动**被走一遍（本端以为在连真系统）。
-- **自证陷阱（硬边界）**: 仿真器与被测端读同一份 spec——spec 错则两边共错、假绿。
-  **仿真器绿 ≠ 协议解释正确**; 首次真实联调即 spec 的验收点, 须显式记「协议已验」。
+- Service / pure-function unit tests; API contract smoke; UI E2E (headless against the
+  real UI, hitting a real backend + fixture DB).
+- **Simulators/mocks**: speak the real protocol, so the real code path runs
+  **unmodified** (the system under test believes it is talking to the real thing).
+- **The self-certification trap (hard boundary)**: the simulator and the system under
+  test read the same spec — if the spec is wrong, both are wrong together, and
+  everything is green. **Simulator-green ≠ protocol correctly understood**; the first
+  real integration is the spec's acceptance point and must be explicitly recorded as
+  "protocol verified."
 
-### 档二: 跨系统真实联调（最终交付 + 部署门禁真相源）
+### Tier 2: cross-system real integration (final delivery + the deploy gate's source of truth)
 
-- 全链打真实 {{外部系统/真机}}; 断言不能只看本端所见（那样仿真器也能骗过）——
-  必须从远端读回真实状态: **结构化遥测端点为主**（只读、加性字段、可断言）,
-  最高风险流补**远端探针**（在远端读回真实状态独立确认）。
-- **认识论边界**: 后端遥测只证明「后端自认从远端读回了什么」; 闭合「数据真到远端」
-  需远端探针或物理基准真值（回环/已知信号源）。测试断言据此标注覆盖边界。
-- **同一套测试双模式**: 真实模式（默认、真相源）/ 仿真模式（离线 fallback）,
-  靠一行配置切换。
+- Full chain against the real {{external system / hardware}}; assertions must not rely
+  only on what this side saw (a simulator can fake that too) — read real state back from
+  the far side: **structured telemetry endpoints** as the mainstay (read-only, additive
+  fields, assertable), plus **far-side probes** for the highest-risk flows (independently
+  confirming state on the remote end).
+- **Epistemic boundary**: backend telemetry only proves "the backend believes it read X
+  from the far side"; closing the loop on "the data truly reached the far side" needs a
+  far-side probe or a physical ground truth (loopback / known signal source). Test
+  assertions label their coverage boundary accordingly.
+- **One suite, two modes**: real mode (default; source of truth) / simulated mode
+  (offline fallback), switched by a single config line.
 
-## 门禁语义
+## Gate semantics
 
-- 准备部署门禁 = 档一全绿 +（真实系统可用时）档二**真实模式**全绿。
-- 真实系统不可用时, 档二以仿真模式跑并**显式标注「未经真实确认」**——
-  仿真结果**永不计入**门禁通过; 相关功能要么 feature-flag 关闭, 要么挡在门禁外,
-  直到档二真实模式跑过。
-- **留测强制**: 任何多系统功能合入前, 测试集必须新增/更新一条链路正确性用例（档二,
-  双模式）。缺则不合入。
+- Deploy-readiness gate = Tier 1 all green + (when the real system is available) Tier 2
+  **real mode** all green.
+- When the real system is unavailable, Tier 2 runs simulated and is **explicitly labeled
+  "not confirmed against the real system"** — simulated results **never count** toward
+  the gate; the affected feature is either feature-flagged off or held at the gate until
+  Tier 2 real mode has passed.
+- **Kept-test enforcement**: any multi-system feature must add or update a data-path
+  correctness case (Tier 2, dual-mode) before merge. Missing = no merge.
 
-## 工具选型槽
+## Tool selection slots
 
-- UI E2E: {{Playwright 等——无头、模型可脚本化、确定性、trace/截图}}。
-  交互式浏览器工具只作临时调试, 不沉淀测试集。
-- 仿真器: {{确定性、可参数化、可被模型启停的独立进程}}。
-- 远端遥测: 只读、守卫恰当、加性字段的可断言端点。
+- UI E2E: {{Playwright or similar — headless, model-scriptable, deterministic,
+  traces/screenshots}}. Interactive browser tools are for ad-hoc debugging only and
+  never become the test set.
+- Simulator: {{a deterministic, parameterizable, model-start/stoppable standalone
+  process}}.
+- Far-side telemetry: read-only, properly guarded, additive-field assertable endpoints.

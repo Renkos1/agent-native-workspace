@@ -1,51 +1,75 @@
-# AI 生产方式规范（ai-workflow）
+# The AI production process (ai-workflow)
 
-适用: 本工作区所有 AI 会话（任意模型）。目标: 把 AI 并行产能转化为吞吐。
-**稀缺资源 = {{独占资源窗口}} · 用户裁决带宽 · 上下文额度**。代码生成量不是瓶颈,
-不要按人力思维排期。文档层级与注入时机统一见 `doc-map.md`（本文件不重复定义）。
+Applies to: every AI session in this workspace (any model). Goal: convert AI parallel
+capacity into throughput.
+**Scarce resources = {{exclusive-resource windows}} · human adjudication bandwidth ·
+context budget.** Code generation volume is not the bottleneck — do not schedule by
+human-labor instincts. Document tiers & injection timing are defined once in `doc-map.md`
+(not repeated here).
 
-## 会话协议
+## Session protocol
 
-1. **开工**: 按章程读序; 已记录的事实不重复考古; 定位用索引跳转（`MAP.md` + 词汇表）,
-   全库扫描是要上报的坏味道。
-2. **认领**: 「开工 <id>」= 执行该 brief 的 `## 启动` 节; **「开工」不解锁 gate**。
-3. **收工**: brief 头状态 + 账本行 + 证据（commit/质量门输出）; 可重复操作沉淀成脚本
-   或 skill。禁止把事实只留在对话里。
-4. **上下文纪律**: 信息收集派子代理（结构化返回, 只留结论进主上下文）; 接近长上下文后
-   禁止再分发——收敛、回写状态、交棒。**brief + 状态行是唯一交棒介质**。
-5. **会话持久记忆**（模型自带 memory 等）只存指针与结论, 真相源永远在仓内文档;
-   冲突时以仓为准、顺手修记忆。
+1. **Start**: follow the charter's reading order; never re-excavate recorded facts;
+   locate by index jumps (`MAP.md` + glossary) — a whole-repo scan is a smell worth
+   reporting.
+2. **Claim**: "start <id>" = execute that brief's `## Start` section; **"start" unlocks
+   no gates**.
+3. **Close**: brief header status + ledger rows + evidence (commit / quality-gate
+   output); repeatable procedures get promoted to scripts or skills. Leaving facts only
+   in the conversation is forbidden.
+4. **Context discipline**: fan information-gathering out to subagents (structured
+   returns; only conclusions enter the main context); near the context ceiling stop
+   delegating — converge, write state back, hand off. **Brief + status line is the only
+   handoff medium.**
+5. **Assistant-side persistent memory** (model-private memory and the like) holds only
+   pointers and conclusions; the source of truth stays in-repo; on conflict the repo
+   wins — fix the memory in passing.
 
-## 工作块协议
+## Work-block protocol
 
-- 一块 = 一份 brief, 自包含可冷启动, 不依赖对话历史（模板: `brief.template.md`）。
-- **交付四件套: 代码 + 测试 + verify 脚本 + 文档一行索引。四缺一不算完。**
-- 验收 = 演示 + 指标（可汇报单元）。
+- One block = one brief, self-contained and cold-startable, independent of chat history
+  (template: `brief.template.md`).
+- **Four-piece delivery: code + tests + verify script + a one-line doc index. Missing
+  any = not done.**
+- Acceptance = a demo + metrics (a reportable unit).
 
-## 并行规则
+## Parallelism rules
 
-- `contracts/` 是并行边界: 两个会话各改契约一侧可零沟通并行; 改契约 = 消费方同变
-  （或版本化过渡）。
-- 涉及同一文件的块禁止并行; 多会话用 git worktree 隔离。
-- `[独占资源]` 块串行排队, 尽量批处理进同一个窗口。
+- `contracts/` is the parallel boundary: two sessions each owning one side of a contract
+  can work with zero coordination; changing a contract = changing its consumers in the
+  same move (or a versioned transition).
+- Blocks touching the same file never run in parallel; multi-session work uses git
+  worktrees.
+- `[exclusive-resource]` blocks queue serially; batch them into a single window when
+  possible.
 
-## 安全边界（硬规则——按项目填; 实例化只许等强或更强）
+## Safety boundaries (hard rules — fill per project; instantiations may only be equal or stricter)
 
-- 默认只允许 {{白名单环境/设备}}; 其他须 brief 显式白名单或用户当次点名。
-- **{{生产/独占资源}} 默认禁触**——例外须同时满足且**每次重新确认（非一次性预授权）**:
-  ① 待替换对象有可回滚的备份制品; ② 操作前实测确认当下无真实使用在跑;
-  ③ 用户对**这一次具体操作**当场明确同意。
-- 破坏性步骤先 `--dry-run`; 写前自动备份是底线。
-- {{领域陷阱清单: 那些「不写就会再踩」的环境坑, 各自指向对应 skill。
-  示例（源工作区）: 烧写后必须再重启一次验链路; 某操作会静默抹掉远端固件}}
+- Default allowlist: {{allowlisted environments/devices}} only; anything else needs an
+  explicit brief allowlist or the human naming it this time.
+- **{{Production / exclusive resources}} are untouchable by default** — an exception
+  requires all three, **re-confirmed every single time (no standing pre-authorization)**:
+  ① a rollback-capable backup of what is being replaced; ② a live check confirming no
+  real usage is running right now; ③ the human explicitly approving **this specific
+  operation, this time**.
+- Destructive steps dry-run first; automatic backup before writes is the floor.
+- {{Domain trap list: the environment traps that will be re-stepped-on unless written
+  down, each pointing at its skill. Examples (origin workspace): after flashing you must
+  reboot once more before trusting the link; a certain routine operation silently wipes
+  remote firmware.}}
 
-## 战役会话经济学
+## Campaign session economics
 
-- **1 会话 = 1 brief**。开工只读读序文件 + 本 brief 列出的目标文件, 禁全库考古。
-- **分工**: 强模型会话负责设计/歧义判断/评审门/{{独占资源}}结果解读; 机械波次由轻量
-  模型按 brief 执行, 强模型按波抽查（每波 ≥1 块全量 review）。
-- **歧义不停工**: fix-forward 默认, 记账本, 批量供用户裁决（分账原则见 `ledgers/README.md`）。
+- **One session = one brief.** At start, read only the reading-order files + the files
+  the brief lists; whole-repo archaeology is forbidden.
+- **Division of labor**: strong-model sessions do design / ambiguity judgment / review
+  gates / {{exclusive-resource}} result interpretation; mechanical waves run on lighter
+  models following the brief, with the strong model spot-checking each wave (≥1 block
+  fully reviewed per wave).
+- **Ambiguity never stops work**: fix-forward by default, log it, batch for human
+  adjudication (ledger split: `ledgers/README.md`).
 
-## 升格候选登记（可执行优先于散文）
+## Promotion candidates (executable beats prose)
 
-{{「流程 → skill」候选清单。规则: 已实跑闭合的流程才升格, 禁固化未验证步骤。}}
+{{"Procedure → skill" candidate list. Rule: only procedures that have actually run to
+completion get promoted; fossilizing unverified steps is forbidden.}}

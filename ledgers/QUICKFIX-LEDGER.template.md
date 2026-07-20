@@ -1,24 +1,28 @@
-# QUICKFIX-LEDGER — 速修账（记下即修）
+# QUICKFIX-LEDGER — the quickfix ledger (logged = approved)
 
-status: ACTIVE（账本）
+status: ACTIVE (ledger)
 
-规则: 用户临时点名的小问题, 登记一行**即视为 APPROVED**, 直接执行; 交付记证据
-（commit + 质量门）。与其他账分工: 需裁决的行为歧义 → `AMBIGUITY-LEDGER`;
-纯美化 → `POLISH-LEDGER`。本账收「语义/文案/默认值级」的小行为修正。
-硬约束同法典（每条执行不可破）: {{契约冻结 / 质量门命令 / 目录边界}}。
+Rule: small problems the user names in passing — logging one row **is the approval**;
+execute directly; deliver with evidence (commit + quality gate). Split with the other
+ledgers: behavioral ambiguity needing adjudication → `AMBIGUITY-LEDGER`; pure polish →
+`POLISH-LEDGER`. This ledger takes small behavioral fixes at semantics / copy /
+default-value scale.
+Hard constraints as in the doctrines (unbreakable per entry): {{contract freeze /
+quality-gate commands / directory boundaries}}.
 
-## 状态机
+## State machine
 
-LOGGED(登记) → DOING → DONE(证据: commit + 质量门) ｜ DEFERRED(挂起, 记原因)
+LOGGED → DOING → DONE (evidence: commit + quality gate) | DEFERRED (reason)
 
-## 条目
+## Entries
 
-| id | 域 | 问题 | 修复方案 | 状态 |
+| id | domain | problem | fix | status |
 |---|---|---|---|---|
 | QF-1 | | | | |
 
-## 启动（说「修 QF-<n>」或直接描述新小修即执行本节）
+## Start (saying "fix QF-<n>" — or describing a new small fix — executes this section)
 
-- 新问题: 先在条目表登记一行（取下一个序号）, 再修。
-- 既有条目: 按该行「修复方案」执行; DEFERRED 条目先核挂起原因是否已解除。
-- 交付回填该行状态 DONE + 证据（commit + 质量门输出）。
+- New problem: log one row first (take the next id), then fix.
+- Existing entry: execute per its "fix" column; for DEFERRED entries, first check
+  whether the deferral reason has cleared.
+- On delivery, set the row to DONE + evidence (commit + quality-gate output).

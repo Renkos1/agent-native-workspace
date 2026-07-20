@@ -1,43 +1,59 @@
-# AI-debuggability charter — 让代码库对 Agent 调试保持廉价
+# AI-debuggability charter — keep the codebase cheap for agents to debug
 
-status: ACTIVE（按需注入: 调试反复碰壁 / 新模块设计时）
+status: ACTIVE (inject on demand: debugging keeps hitting walls / designing a new module)
 
-本项目主要由 AI Agent 建设维护。**允许并鼓励受控偏离既有实现, 只要让系统更易被 Agent
-运行、观测、推理**; 必要逻辑保留, 但必要逻辑永不成为真实用户路径验证的阻塞。
+This project is primarily built and maintained by AI agents. **Controlled divergence
+from existing implementations is allowed and encouraged whenever it makes the system
+easier for agents to run, observe, and reason about**; necessary logic stays, but
+necessary logic must never block verification of real user paths.
 
-## 撞墙的唯一病根
+## The single root cause of wall-bumping
 
-所有反复出现的调试墙同一形状: **读代码推不出来的知识, 存在了 Agent 无法行动的地方**
-——上一个会话的聊天记录、或一份散文账本。于是每次运行都靠再撞一次墙重建这份知识。
+Every recurring debugging wall has the same shape: **knowledge underivable from the
+code, stored where an agent cannot act on it** — a previous session's chat log, or a
+prose ledger. So every run rebuilds that knowledge by hitting the wall again.
 
-{{列 3-5 个本项目实例——那些代码里看不见、每次都要重新发现的坑。
-示例（源工作区）: 能跑的服务在隔壁 worktree 而非本目录; dev 进程带 --watch 一改文件就死;
-某操作会静默清空远端固件; 全局可变开关被并发会话来回翻转。}}
+{{List 3-5 project examples — the traps invisible in code that get rediscovered every
+time. Examples (origin workspace): the runnable service lives in the neighboring
+worktree, not this directory; the dev process runs --watch and dies on any file edit; a
+certain operation silently wipes remote firmware; a global mutable toggle gets flipped
+back and forth by concurrent sessions.}}
 
-## 规则 1 — 不可推导知识编码在 Agent 可行动处（优先级从高到低）
+## Rule 1 — encode non-derivable knowledge where agents can act (priority high → low)
 
-1. **可执行**: 类型、`assert` 前置条件、报出确切缺失条件的 preflight、测试。
-   不会过期; Agent 能*跑*它。
-2. **结构化运行时信号**: 带阶段名的日志（`stage=...`）、点名失败前置条件的错误信息、
-   主错误与清理错误分离。把「不知哪失败」变成「在*这*失败, 因为 X」。
-3. **现场一行 rationale 注释**: 只留真正无法可执行化的 *why*, 写在代码现场。
-4. **账本条目**: 兜底/索引, locality 最差——Agent 得先知道去读它。
+1. **Executable**: types, `assert` preconditions, preflights that name the exact missing
+   condition, tests. Never stales; agents can *run* it.
+2. **Structured runtime signals**: stage-named logs (`stage=...`), error messages naming
+   the failed precondition, primary errors separated from cleanup errors. Turns "failed
+   somewhere" into "failed *here*, because X."
+3. **A one-line rationale comment at the site**: only the *why* that truly cannot be
+   made executable.
+4. **A ledger entry**: fallback and index — worst locality; the agent must first know to
+   go read it.
 
-不是「到处加注释」——描述性 what 注释低值且会烂; 把隐藏前置条件转成 preflight 断言
-和阶段日志, 散文只留给不可执行的 why。
+This is not "comment everything" — descriptive *what* comments are low-value and rot.
+Convert hidden preconditions into preflight assertions and stage logs; save prose for
+the non-executable *why*.
 
-## 规则 2 — harness 拥有环境, 不是 Agent
+## Rule 2 — the harness owns the environment, not the agent
 
-Agent 调试应把回合花在问题本体上, 不是手起服务或重新发现「哪棵树能跑」。每个 live
-验证必须有单一入口, 由入口保证自身前置条件, 或 fail-fast 点名缺什么。
+Agent debugging should spend its turns on the problem itself, not on hand-starting
+services or rediscovering "which tree runs." Every live verification has a single entry
+point that either guarantees its own preconditions or fails fast naming what is missing.
 
-## 规则 3 — 「模型可调试性」是验收硬指标
+## Rule 3 — "model-debuggability" is a hard acceptance criterion
 
-每块验收含: **模型能在零人工手操下定位并复现该域任意 bug**。落到可执行约束:
+Every block's acceptance includes: **a model can locate and reproduce any bug in this
+domain with zero manual operation.** As executable constraints:
 
-1. 稳定测试锚点（`data-testid` 等, 不因改样式而断）。
-2. 错误不吞: 一律进 console/日志 + 可见状态; 禁裸 `catch {}` 静默; 失败有确定文案。
-3. 状态可视: 统一状态层, 可被工具/脚本直接读, 能脱离整机复现单一状态。
-4. 类型兜底: 把一整类错误提前到构建期（模型最易抓的失败面）。
-5. 确定性: source map/可读栈指到源码; 避免隐式副作用（改一处崩别处）。
-6. 可隔离: 单视图/单模块可独立挂起调试, 不必启动整机。
+1. Stable test anchors (`data-testid` and the like — style changes must not break them).
+2. No swallowed errors: everything reaches console/logs + visible state; bare silent
+   `catch {}` banned; failures have deterministic copy.
+3. Visible state: a unified state layer readable by tools and scripts; any single state
+   reproducible without booting the whole machine.
+4. Types as the floor: pull whole classes of error forward to build time (the failure
+   surface models catch best).
+5. Determinism: source maps / readable stacks pointing at sources; no implicit side
+   effects (edit here, break there).
+6. Isolatable: any single view or module can be mounted and debugged alone, without the
+   whole machine.
