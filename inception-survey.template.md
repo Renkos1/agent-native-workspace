@@ -13,8 +13,12 @@ single assistant's private memory).
 **Companion-file design**: this file is the generic edition — no project-specific
 details; each dimension's paid-for lessons are distilled into the questions themselves.
 Keep an in-house **scar casebook** as the evidence layer: per dimension, log
-"scar (one-line fact) → lesson (one transferable line) → source." Related projects copy
-it in alongside this survey; unrelated projects take this file alone.
+"scar (one-line fact) → lesson (one transferable line) → source." The casebook is
+**consulted during the founding conversation only — never copied into the new repo**
+(another project's facts sitting in a fresh repo get read as this repo's facts:
+contamination); each new project starts its own casebook and feeds it as lessons get
+paid for. If the founding session cannot reach the origin workspace, copy only the
+relevant rows, labeled "origin evidence, not this project's facts."
 
 **Three-state disposition** (every item must land in exactly one; registry at the end):
 

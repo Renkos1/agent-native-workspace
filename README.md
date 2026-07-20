@@ -7,8 +7,8 @@ the primary workforce and humans adjudicate.
 `{{...}}` marks fill-in variables; replace "Example:" passages with your project's facts.
 
 > **The one-line bootstrap (paste to any model — the only thing a human needs to remember):**
-> "Read `<this directory>/README.md`, follow the instantiation steps; in step 2, you
-> proactively run the inception survey, item by item."
+> "Read `<this directory>/README.md`, follow the instantiation steps; you proactively
+> drive the founding conversations in steps 2-3 (survey → product → architecture)."
 > The source of truth for behavioral protocols like that is **this README** — never any
 > single assistant's private memory. Swap models and nothing is lost.
 
@@ -39,6 +39,7 @@ the primary workforce and humans adjudicate.
 | File | What it is | Depends on |
 |---|---|---|
 | `inception-survey.template.md` | Inception survey (nine lifecycle dimensions + three-state disposition; **the first thing in the founding conversation**, read once and never injected again; hard-won lessons are distilled into the questions themselves) | outputs land in AGENTS + briefs |
+| `kickoff-prompts.template.md` | Founding kickoffs — product planning (Prompt A) & architecture/stack (Prompt B): the founding conversations that follow the survey; read once, never injected again | inception-survey, brief |
 | `doc-map.template.md` | Document tiers × injection timing, the master contract (**read/fill this first**) | — |
 | `AGENTS.template.md` | Workspace charter (reading order / layout / hard rules / start-of-work protocol) | doc-map |
 | `ai-workflow.template.md` | Session protocol / work-block protocol / parallelism rules / economics / safety boundaries | AGENTS, doc-map |
@@ -54,21 +55,25 @@ the primary workforce and humans adjudicate.
 1. Copy this directory into the new project; drop the `.template` suffixes.
 2. **Run the inception survey**: in the founding conversation, the AI proactively walks
    `inception-survey` (nine lifecycle dimensions), giving each item a three-state
-   disposition — "decide now" conclusions feed step 4's charter; deferred items become
-   TODO briefs with explicit triggers. (Recommended: keep an in-house "scar casebook" —
-   your own paid-for lessons per dimension, as evidence; format in the survey's
-   companion-file note. This pack ships no project-specific casebook.)
-3. **Fill doc-map**: decide this project's document tiers, each tier's injection timing,
+   disposition — "decide now" conclusions feed step 5's charter; deferred items become
+   TODO briefs with explicit triggers. (If your organization keeps a scar casebook, the
+   AI consults it during this conversation as evidence — it is **never copied into the
+   new repo**; the new project starts a casebook of its own.)
+3. **Run the two kickoffs**: from `kickoff-prompts`, Prompt A (product planning →
+   product brief + campaign briefs), then Prompt B (architecture & stack → charter tech
+   sections + contracts skeletons + ADR list).
+4. **Fill doc-map**: decide this project's document tiers, each tier's injection timing,
    and the session-start reading set (aim for ≤4 files).
-4. Fill `AGENTS.md`: layout / canonical-name table / quality-gate commands / safety
-   allowlist (replace every `{{...}}`, including the survey's "decide now" outcomes).
-5. Trim to fit: no hardware → delete the real-hardware safety sections but keep the
+5. Fill `AGENTS.md`: layout / canonical-name table / quality-gate commands / safety
+   allowlist (replace every `{{...}}`, including the survey's "decide now" outcomes and
+   Prompt B's ADR rulings).
+6. Trim to fit: no hardware → delete the real-hardware safety sections but keep the
    "exclusive-resource three-condition exception" skeleton (production databases and live
    environments need it just the same); no dual-track parallelism → delete the contracts
    parallel-boundary section, keep the contract-first principle.
-6. Create `briefs/` `contracts/` `scripts/verify/` `scripts/audit/`; start the first brief
-   from brief.template (include the survey's deferred items).
-7. Build two reconciliation checks: a brief status-header validator (deterministic,
+7. Create `briefs/` `contracts/` `scripts/verify/` `scripts/audit/`; briefs come from
+   the survey's deferred items and Prompt A's campaign cut (template: brief.template).
+8. Build two reconciliation checks: a brief status-header validator (deterministic,
    zero-dependency, run casually) + a doc-vs-reality multi-agent read-only audit
    (judgment-based, run at campaign close). The source implementations live in the private
    origin workspace and don't ship with this pack; rebuild from the two descriptions above.
