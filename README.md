@@ -4,7 +4,8 @@ Project-agnostic mechanism templates extracted from a real production project (a
 remote-lab platform, 2026-07). For any software or hardware project where AI sessions are
 the primary workforce and humans adjudicate. **Scope: greenfield founding** — the
 instantiation steps assume a brand-new project whose code is written under the glossary
-from day one; retrofitting an existing codebase is not covered (yet).
+from day one; retrofitting an existing codebase is not covered yet
+([#1](https://github.com/Renkos1/agent-native-workspace/issues/1)).
 
 `{{...}}` marks fill-in variables; replace "Example:" passages with your project's facts.
 
@@ -53,6 +54,7 @@ from day one; retrofitting an existing codebase is not covered (yet).
 | `skill.template.md` | Skill template (the fossilized-trap form) | — |
 | `scar-casebook.template.md` | Scar casebook (the survey's evidence layer; lives in your org's private workspace, **never** inside a project repo) | inception-survey |
 | `scripts/` | Reference implementations: status-header validator + doc-vs-reality audit prompt (`audit/`) · MAP generator seed (`dev/`) | doc-map, AGENTS |
+| `harness-bindings-claude-code.md` | Harness bindings, Claude Code edition (pack mechanism → native feature; the degradation column is the pack itself) | all mechanism files |
 
 ## Instantiation steps
 
@@ -85,6 +87,10 @@ from day one; retrofitting an existing codebase is not covered (yet).
    multi-agent read-only audit prompt, run at campaign close). Then seed the index:
    `dev/gen_map.py` renders `MAP.md` from its SEED table — this is the generator the
    charter's "hand-editing forbidden" rule presumes.
+9. **Bind to your harness**: walk `harness-bindings-<harness>.md` and wire the mappings
+   (skills / hooks / commands). No page for your harness → copy the Claude Code page and
+   refill its middle column (instructions at its foot); running unbound is always legal —
+   the degradation column is the pack itself.
 
 ## Provenance and maintenance
 
