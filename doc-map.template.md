@@ -12,7 +12,7 @@ start set must displace equal volume; otherwise it is injected on demand.
 
 | Tier | Contents | Injection timing | Change rules |
 |---|---|---|---|
-| L0 charter/doctrine | `AGENTS.md` · active doctrines (execution rules, aim ≤3-4 files) | **Read at every session start** (keep small) | Changes only follow human decisions; promoting or retiring a doctrine is a human call |
+| L0 charter/doctrine | `AGENTS.md` · active doctrines (pack default: `ai-workflow.md` **alone** — the testing constitution and this file inject on demand; aim ≤3-4 files total, keep ≥1 slot free for the project's own) | **Read at every session start** (keep small) | Changes only follow human decisions; promoting or retiring a doctrine is a human call |
 | L1 operating system | conventions `conventions/` · contracts `contracts/` · skills `skills/` · scripts `scripts/` · domain facts (device tables / glossary / environment tables) | **On demand** (trigger table below) | A change must update the affected rules/scripts in the same move |
 | L2 live state | `briefs/` status headers & active briefs · ledgers · generated index `MAP.md` | On claim / on logging / on adjudication | Written back at every session close; moved to archive at campaign close |
 | L3 history | `handoff/` · `archive/` · historical runbooks · `releases/` | **Never by default**; only explicit archaeology or audit reads it | Append-only |
@@ -22,6 +22,8 @@ start set must displace equal volume; otherwise it is injected on demand.
 | Trigger | Inject |
 |---|---|
 | Before writing {{tier/language}} code | `conventions/code-standards-{{tier}}.md` |
+| Designing or adding tests / simulator strategy / reading gate results | `TEST-CONSTITUTION.md` (the law binds always; it reads on demand) |
+| Landing a new document / a doc contradicts reality | `doc-map.md` (this file) |
 | Creating a new module / debugging keeps hitting walls | `retrieval-optimized-code.md` · `ai-debuggability.md` |
 | Before touching any cross-tier seam | `contracts/<the contract>` + its test vectors |
 | Before touching any exclusive resource (hardware / production DB / live env) | {{domain-facts doc}} + `ai-workflow.md` §safety |
@@ -45,8 +47,9 @@ start set must displace equal volume; otherwise it is injected on demand.
 - A document contradicts reality: **fix the document before doing the work**.
 - Orphan documents (outside the tier table): either register into L1 with one clear
   responsibility, or archive.
-- Two-mode reconciliation: a deterministic script (status headers / path existence; run
-  casually) + a judgment-based multi-agent read-only audit (must run at campaign close);
+- Two-mode reconciliation: a deterministic script (status headers / path existence:
+  `scripts/audit/check_status_headers.py`; run casually) + a judgment-based multi-agent
+  read-only audit (`scripts/audit/doc-reality-audit.md`; must run at campaign close);
   findings feed the next hygiene wave.
 - State lives only in brief headers and ledgers; no long conversational prose;
   **brief + status line is the only handoff medium**.

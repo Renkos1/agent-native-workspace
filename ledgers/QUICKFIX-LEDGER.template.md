@@ -6,7 +6,9 @@ Rule: small problems the user names in passing — logging one row **is the appr
 execute directly; deliver with evidence (commit + quality gate). Split with the other
 ledgers: behavioral ambiguity needing adjudication → `AMBIGUITY-LEDGER`; pure polish →
 `POLISH-LEDGER`. This ledger takes small behavioral fixes at semantics / copy /
-default-value scale.
+default-value scale. **Escalation boundary**: touches a contract, crosses a directory
+boundary, or won't land in one sitting → not a quickfix; open a brief (the user's naming
+becomes that brief's `origin`, not an approval of the larger scope).
 Hard constraints as in the doctrines (unbreakable per entry): {{contract freeze /
 quality-gate commands / directory boundaries}}.
 

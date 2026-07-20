@@ -3,10 +3,10 @@
 This workspace is {{one line: what the project is + what this workspace does}}. This file
 applies to sessions of any model (Claude / GPT / …; no proprietary tooling assumed).
 
-**Session-start reading order: this file → active doctrines ({{doctrine list, ≤3-4
-files}}) → the claimed brief.**
-The kanban is one command: `grep -h "^status:" briefs/*.md` (backed by the status-header
-validator; run it casually).
+**Session-start reading order: this file → active doctrines ({{doctrine list — pack
+default: `ai-workflow.md` alone; ≤3-4 files, keep headroom}}) → the claimed brief.**
+The kanban is one command: `grep -h "^status:" briefs/*.md` (backed by
+`scripts/audit/check_status_headers.py`; run it casually).
 Document tiers & injection timing: `doc-map.md` — a new document passes through it before
 landing; the session-start reading set only shrinks.
 

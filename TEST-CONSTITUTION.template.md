@@ -1,6 +1,7 @@
 # Testing constitution — single-system internal / cross-system real integration
 
-status: ACTIVE
+status: ACTIVE (inject on demand: designing or modifying tests / simulator strategy /
+gate decisions — the law binds always; it reads on demand, not at session start)
 Applies to: all tracks. Top-level law, peer to the ledgers.
 
 ## First principles

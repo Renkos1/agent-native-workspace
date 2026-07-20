@@ -12,7 +12,8 @@ single assistant's private memory).
 
 **Companion-file design**: this file is the generic edition — no project-specific
 details; each dimension's paid-for lessons are distilled into the questions themselves.
-Keep an in-house **scar casebook** as the evidence layer: per dimension, log
+Keep an in-house **scar casebook** as the evidence layer (template:
+`scar-casebook.template.md`): per dimension, log
 "scar (one-line fact) → lesson (one transferable line) → source." The casebook is
 **consulted during the founding conversation only — never copied into the new repo**
 (another project's facts sitting in a fresh repo get read as this repo's facts:

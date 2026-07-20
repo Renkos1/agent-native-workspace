@@ -2,7 +2,9 @@
 
 Project-agnostic mechanism templates extracted from a real production project (an FPGA
 remote-lab platform, 2026-07). For any software or hardware project where AI sessions are
-the primary workforce and humans adjudicate.
+the primary workforce and humans adjudicate. **Scope: greenfield founding** — the
+instantiation steps assume a brand-new project whose code is written under the glossary
+from day one; retrofitting an existing codebase is not covered (yet).
 
 `{{...}}` marks fill-in variables; replace "Example:" passages with your project's facts.
 
@@ -40,7 +42,7 @@ the primary workforce and humans adjudicate.
 |---|---|---|
 | `inception-survey.template.md` | Inception survey (nine lifecycle dimensions + three-state disposition; **the first thing in the founding conversation**, read once and never injected again; hard-won lessons are distilled into the questions themselves) | outputs land in AGENTS + briefs |
 | `kickoff-prompts.template.md` | Founding kickoffs — product planning (Prompt A) & architecture/stack (Prompt B): the founding conversations that follow the survey; read once, never injected again | inception-survey, brief |
-| `doc-map.template.md` | Document tiers × injection timing, the master contract (**read/fill this first**) | — |
+| `doc-map.template.md` | Document tiers × injection timing, the master contract (**read this first; filled at step 4**) | — |
 | `AGENTS.template.md` | Workspace charter (reading order / layout / hard rules / start-of-work protocol) | doc-map |
 | `ai-workflow.template.md` | Session protocol / work-block protocol / parallelism rules / economics / safety boundaries | AGENTS, doc-map |
 | `TEST-CONSTITUTION.template.md` | Testing constitution (two-tier testing + the simulator self-certification trap + gate semantics) | — |
@@ -49,6 +51,8 @@ the primary workforce and humans adjudicate.
 | `ledgers/` | The three ledgers + the split-by-adjudication principle | ai-workflow |
 | `brief.template.md` | Work-block brief template (with its `## Start` section) | AGENTS start protocol |
 | `skill.template.md` | Skill template (the fossilized-trap form) | — |
+| `scar-casebook.template.md` | Scar casebook (the survey's evidence layer; lives in your org's private workspace, **never** inside a project repo) | inception-survey |
+| `scripts/` | Reference implementations: status-header validator + doc-vs-reality audit prompt (`audit/`) · MAP generator seed (`dev/`) | doc-map, AGENTS |
 
 ## Instantiation steps
 
@@ -63,7 +67,9 @@ the primary workforce and humans adjudicate.
    product brief + campaign briefs), then Prompt B (architecture & stack → charter tech
    sections + contracts skeletons + ADR list).
 4. **Fill doc-map**: decide this project's document tiers, each tier's injection timing,
-   and the session-start reading set (aim for ≤4 files).
+   and the session-start reading set (aim for ≤4 files; the pack's own default is two —
+   `AGENTS.md` + `ai-workflow.md` — everything else injects on demand; keep the headroom
+   for your project's doctrines).
 5. Fill `AGENTS.md`: layout / canonical-name table / quality-gate commands / safety
    allowlist (replace every `{{...}}`, including the survey's "decide now" outcomes and
    Prompt B's ADR rulings).
@@ -73,10 +79,12 @@ the primary workforce and humans adjudicate.
    parallel-boundary section, keep the contract-first principle.
 7. Create `briefs/` `contracts/` `scripts/verify/` `scripts/audit/`; briefs come from
    the survey's deferred items and Prompt A's campaign cut (template: brief.template).
-8. Build two reconciliation checks: a brief status-header validator (deterministic,
-   zero-dependency, run casually) + a doc-vs-reality multi-agent read-only audit
-   (judgment-based, run at campaign close). The source implementations live in the private
-   origin workspace and don't ship with this pack; rebuild from the two descriptions above.
+8. Wire the two reconciliation checks — reference implementations ship in `scripts/`:
+   `audit/check_status_headers.py` (deterministic, stdlib-only, run casually; edit its
+   CONFIG block to your layout) + `audit/doc-reality-audit.md` (judgment-based
+   multi-agent read-only audit prompt, run at campaign close). Then seed the index:
+   `dev/gen_map.py` renders `MAP.md` from its SEED table — this is the generator the
+   charter's "hand-editing forbidden" rule presumes.
 
 ## Provenance and maintenance
 
